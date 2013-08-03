@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1138.32">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 22.0px Cochin}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 17.0px Cochin; min-height: 19.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 17.0px Cochin}
+li.li3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 17.0px Cochin}
+span.Apple-tab-span {white-space:pre}
+ol.ol1 {list-style-type: decimal}
+ul.ul1 {list-style-type: disc}
+</style>
+</head>
+<body>
+<p class="p1"><b>Введение</b></p>
+<p class="p2"><br></p>
+<p class="p3">Здравствуйте.</p>
+<p class="p3">Псевдо-подписки являются мощнейшим инструментом для получения прибыли.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3">Однако, для того чтобы их использовать необходимо обладать определенными познаниями в веб-программировании.</p>
+<p class="p2"><br></p>
+<p class="p3">Данный скрипт создан для того чтобы улучшить понимание работы механизма псевдо-подписок на платформе profit-bill.com.</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3">Cкрипт является примером сайта где пользователь оплачивает какую-то услугу посредством псевдо-подписки.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>Логика работы скрипта</b></p>
+<p class="p2"><br></p>
+<ol class="ol1">
+<li class="li3">Абонент заходит на сайт (страница index.php)</li>
+<li class="li3">Абонент<span class="Apple-converted-space">  </span>вводит свой номер телефона и ему отправляется смс с определенного короткого номера (например, 8151) с определенным текстом ("Сколько вам лет?"), затем он переадресовывается на страницу check.php</li>
+<li class="li3">Абонент отвечает на смс, смс засчитывается в статистику. Биллинг вызывает обработчик входящих смс (handler.php), который генерирует код доступа и возвращает его биллингу</li>
+<li class="li3">Биллинг отправляет абоненту код доступа, полученный от handler.php</li>
+<li class="li3">Абонент вводит полученный код доступа на странице check.php</li>
+<li class="li3">В случае правильного ввода кода, абонент попадает на страницу paid.php на которой он получает оплаченный контент.</li>
+</ol>
+<p class="p2"><br></p>
+<p class="p1"><b>Установка</b></p>
+<p class="p2"><br></p>
+<p class="p3">Необходимые условия для установки скрипта:</p>
+<ul class="ul1">
+<li class="li3">Нормальный хостинг с поддержкой php и возможностью удаленных соединений через file_get_contents()</li>
+<li class="li3">PDO в php с поддержкой используемой вами БД</li>
+<li class="li3">Версия php<span class="Apple-converted-space">  </span>&gt;= 5.2. Рекомендуется версия 5.3</li>
+<li class="li3">Действующий аккаунт в смс-биллинге profit-bill.com<span class="Apple-converted-space"> </span></li>
+<li class="li3">Активный проект псевдо-подписки</li>
+</ul>
+<p class="p2"><br></p>
+<p class="p3">По умолчанию скрипт использует sqlite в качестве базы данных.</p>
+<p class="p3">На некоторых платформах (в частности, windows) наблюдаются проблемы в использовании sqlite.<span class="Apple-converted-space"> </span></p>
+<p class="p3">В конце этого документа написано о том как использовать mysql.</p>
+<p class="p2"><br></p>
+<p class="p3"><i>Скорее всего, на бесплатных хостингах, скрипт не заработает.</i></p>
+<p class="p2"><br></p>
+<p class="p3">Процедура установки скрипта:</p>
+<ol class="ol1">
+<li class="li3">Скопируйте файлы из папки upload на хостинг</li>
+<li class="li3">Поставьте права 777 на папку sqlite</li>
+<li class="li3">Поставьте права 777 на файл sqlite/database.sql</li>
+<li class="li3">Откройте и отредактируйте файл config.php в соответствии с приведенными в нем инструкциями</li>
+<li class="li3">Проверьте корректность установки. В бразуере откройте URL http://&lt;адрес_сайта_где_установлен_скрипт&gt;/test.php</li>
+<li class="li3">Убедитесь что во время тестирования невыявлено ошибок</li>
+<li class="li3">В проекте псевдо-подписки в смс-биллинге укажите URL обработчика http://&lt;адрес_сайта_где_установлен_скрипт&gt;/test.php</li>
+<li class="li3">Установка завершена</li>
+</ol>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>Использование mysql</b></p>
+<p class="p2"><br></p>
+<p class="p3">Если вы хотите использовать mysql вместо sqlite, выполните следующие действия:</p>
+<p class="p2"><br></p>
+<ol class="ol1">
+<li class="li3">В базе данных создайте таблицу, выполнив следующий запрос CREATE TABLE `codes` (</li>
+</ol>
+<p class="p3"><span class="Apple-converted-space">  </span>`code` varchar(20) DEFAULT NULL,</p>
+<p class="p3"><span class="Apple-converted-space">  </span>`expires` INT(11) DEFAULT NULL</p>
+<p class="p3">);</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>2.<span class="Apple-tab-span">	</span>Откройте файл config.php и отредактируйте его в соответствии с инструкциями</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+</body>
+</html>
